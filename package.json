@@ -1,0 +1,29 @@
+{
+  "name": "feeds",
+  "version": "1.0.0",
+  "description": "",
+  "main": "calendar.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^14.3.2",
+    "dotenv-expand": "^6.0.1",
+    "express": "^4.17.2",
+    "express-prometheus-middleware": "^1.2.0",
+    "express-validator": "^6.14.0",
+    "log4js": "^6.4.1",
+    "log4js-fluent-appender": "^1.0.1",
+    "moment": "^2.29.1",
+    "mongoose": "^6.1.8",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "prom-client": "^14.0.1",
+    "rss-parser": "^3.12.0",
+    "sequelize": "^6.15.0",
+    "superagent": "^7.1.1"
+  }
+}
