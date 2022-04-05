@@ -1,7 +1,7 @@
 const log4js = require("log4js");
 
 const parseRSSNewsFeed = require("../lib/news");
-const db = require("../lib/mongo");
+const event = require("../lib/event");
 const logger = require("../lib/logger");
 
 const feeds = [
@@ -22,37 +22,36 @@ const feeds = [
 ];
 
 async function main() {
-  await db.init();
-
   Promise.allSettled(
     feeds.map((feed) => {
-      return parseRSSNewsFeed(feed)
-        .then((items) => {
-          logger.info(`received ${items.length} records from ${feed}`);
-          return db.Article.insertMany(items);
-        })
-        .catch((err) => {
-          if (err) {
-            if (err.code === 11000) {
-              // Duplicate
-            } else {
-              logger.error("article insert error " + err);
-            }
-          }
-        });
+      return parseRSSNewsFeed(feed).then((items) => {
+        logger.info(`received ${items.length} records from ${feed}`);
+
+        return Promise.allSettled(
+          items.map((item) =>
+            event.publish({
+              timestamp: new Date(),
+              name: "news",
+              source: "feeds",
+              body: { ...item, feed },
+            })
+          )
+        );
+      });
     })
   )
     .then((results) => {
-      results.forEach((result, i) => {
+      results.forEach((result) => {
         if (result.status === "rejected") {
-          logger.error(`failed to process feed ${feeds[i]}`);
+          logger.error(`Failed to publish event ${result.reason}`);
+        } else {
+          logger.info(`Published event ${result.value.id}`);
         }
       });
     })
     .finally(() => {
       logger.info("done");
       log4js.shutdown();
-      db.close();
     });
 }
 
