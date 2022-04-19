@@ -24,35 +24,35 @@ const feeds = [
 async function main() {
   Promise.allSettled(
     feeds.map((feed) => {
-      return parseRSSNewsFeed(feed).then((items) => {
-        logger.info(`received ${items.length} records from ${feed}`);
+      return parseRSSNewsFeed(feed)
+        .then((items) => {
+          logger.info(`received ${items.length} records from ${feed}`);
 
-        return Promise.allSettled(
-          items.map((item) =>
-            event.publish({
-              timestamp: new Date(),
-              name: "news",
-              source: "feeds",
-              body: { ...item, feed },
-            })
-          )
-        );
-      });
+          return Promise.allSettled(
+            items.map((item) =>
+              event.publish({
+                timestamp: new Date(),
+                name: "news",
+                source: "feeds",
+                body: { ...item, feed },
+              })
+            )
+          );
+        })
+        .then((results) => {
+          results.forEach((result) => {
+            if (result.status === "rejected") {
+              logger.error(`Failed to publish event ${result.reason}`);
+            } else {
+              logger.info(`Published event ${result.value.id}`);
+            }
+          });
+        });
     })
-  )
-    .then((results) => {
-      results.forEach((result) => {
-        if (result.status === "rejected") {
-          logger.error(`Failed to publish event ${result.reason}`);
-        } else {
-          logger.info(`Published event ${result.value.id}`);
-        }
-      });
-    })
-    .finally(() => {
-      logger.info("done");
-      log4js.shutdown();
-    });
+  ).finally(() => {
+    logger.info("done");
+    log4js.shutdown();
+  });
 }
 
 main();
