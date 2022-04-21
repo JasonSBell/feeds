@@ -1,11 +1,11 @@
 const log4js = require("log4js");
 
-const fetchSenateTrades = require("../lib/senate");
+const fetchHouseTrades = require("../lib/house");
 const event = require("../lib/event");
 const logger = require("../lib/logger");
 
 async function main() {
-  fetchSenateTrades()
+  fetchHouseTrades()
     .then((items) => {
       logger.info(`received ${items.length} records`);
 
@@ -15,7 +15,7 @@ async function main() {
             timestamp: new Date(),
             name: "congressional_trade",
             source: "feeds",
-            body: { ...item, body: "Senate" },
+            body: { ...item, body: "House of Representatives" },
           })
         )
       );
