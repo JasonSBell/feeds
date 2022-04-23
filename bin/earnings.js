@@ -5,7 +5,7 @@ const event = require("../lib/event");
 const logger = require("../lib/logger");
 
 async function main() {
-  fetchEarnings(new Date("2022-04-18"))
+  fetchEarnings()
     .then((items) => {
       logger.info(`received ${items.length} records`);
 
