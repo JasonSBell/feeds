@@ -13,3 +13,5 @@ MONGO_PASSWORD=password
 MONGO_DATABASE=allokate
 
 FLUENTD_HOST=localhost
+
+EVENT_SERVICE_API=http://localhost:8092
