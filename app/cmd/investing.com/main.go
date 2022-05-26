@@ -12,7 +12,7 @@ import (
 func main() {
 
 	// Define the source url for the feed.
-	url := "https://www.investing.com/rss/121899.rss"
+	url := "https://www.investing.com/rss/news_25.rss"
 
 	// Parse the feed.
 	fp := gofeed.NewParser()
