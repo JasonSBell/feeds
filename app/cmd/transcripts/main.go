@@ -14,7 +14,7 @@ import (
 	"github.com/allokate-ai/feeds/app/internal/event"
 )
 
-func extractTickers(text string) []string {
+func ExtractTickers(text string) []string {
 	var tickers []string
 
 	r := regexp.MustCompile(`\( ?(?:(NYSE:)|(NASDAQ:))?([A-Z .]+)\)`)
@@ -48,7 +48,7 @@ type PagedEarningsCallTranscripts struct {
 	DateRange   DateRange
 }
 
-func fetchTranscripts(from time.Time, to time.Time, size int, page int) (PagedEarningsCallTranscripts, error) {
+func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int) (PagedEarningsCallTranscripts, error) {
 	today := time.Now().Format("2006-01-02")
 
 	uri := fmt.Sprintf("https://seekingalpha.com/api/v3/articles?cacheBuster=%s&filter[category]=earnings::earnings-call-transcripts&filter[since]=%d&filter[until]=%d&include=author,primaryTickers,secondaryTickers&isMounting=true&page[size]=%d&page[number]=%d", today, from.UTC().Unix(), to.UTC().Unix(), size, page)
@@ -140,10 +140,10 @@ func fetchTranscripts(from time.Time, to time.Time, size int, page int) (PagedEa
 	}, err
 }
 
-func fetchTranscriptsFromYesterday() ([]EarningsCallTranscript, error) {
+func EarningsCallTranscriptsFromDate(date time.Time) ([]EarningsCallTranscript, error) {
 
 	// Calculate the date range from the start of yesterday (UTC) to midnight today.
-	from := time.Now().Add(-24 * time.Hour).UTC().Truncate(24 * time.Hour)
+	from := date.UTC().Truncate(24 * time.Hour)
 	to := from.Add(24 * time.Hour)
 
 	// Page starts at 1, not 0 according to their API.
@@ -151,7 +151,7 @@ func fetchTranscriptsFromYesterday() ([]EarningsCallTranscript, error) {
 
 	var transcripts []EarningsCallTranscript
 	for {
-		data, err := fetchTranscripts(from, to, 40, page)
+		data, err := EarningsCallTranscripts(from, to, 250, page)
 		if err != nil {
 			return transcripts, err
 		}
@@ -174,12 +174,12 @@ func fetchTranscriptsFromYesterday() ([]EarningsCallTranscript, error) {
 
 func main() {
 
-	transcripts, err := fetchTranscriptsFromYesterday()
+	yesterday := time.Now().Add(-17 * 24 * time.Hour) // time.Now().Add(-24 * time.Hour)
+
+	transcripts, err := EarningsCallTranscriptsFromDate(yesterday)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Fetched", len(transcripts), "transcripts")
 
 	for _, transcript := range transcripts {
 
@@ -187,7 +187,7 @@ func main() {
 		tags := []string{"earnings call"}
 
 		// Scan the title looking for the ticker of the company and append to tags if found.
-		tickers := extractTickers(transcript.Title)
+		tickers := ExtractTickers(transcript.Title)
 		if len(tickers) > 0 {
 			tags = append(tags, tickers...)
 		}
@@ -208,5 +208,8 @@ func main() {
 		} else {
 			log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())
 		}
+
 	}
+
+	fmt.Println("Fetched", len(transcripts), "transcripts for", yesterday.Format("2006-01-02"))
 }
