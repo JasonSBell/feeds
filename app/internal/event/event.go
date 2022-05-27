@@ -12,7 +12,7 @@ import (
 var c *client.Client
 
 // Define the JSON body structure for publishing an article (article.created).
-type Article struct {
+type ArticlePublished struct {
 	Source string    `json:"source"`
 	Byline string    `json:"byline"`
 	Title  string    `json:"title"`
@@ -36,6 +36,21 @@ type CongressionalTrade struct {
 	Amount          string     `json:"amount"`
 }
 
+type Earnings struct {
+	Date   time.Time `json:"date"`
+	Ticker string    `json:"ticker"`
+}
+
+type Dividend struct {
+	Name             string     `json:"name"`
+	Ticker           string     `json:"ticker"`
+	ExDate           *time.Time `json:"exDate"`
+	DividendRate     float32    `json:"dividendRate"`
+	RecordDate       *time.Time `json:"recordDate"`
+	PaymentDate      *time.Time `json:"paymentDate"`
+	AnnouncementDate *time.Time `json:"announcementDate"`
+}
+
 func Client() *client.Client {
 	if c == nil {
 		// Declare a client that will be used to publish new articles.
@@ -50,7 +65,7 @@ func Client() *client.Client {
 
 }
 
-func EmitArticlePublishedEvent(article Article) (events.GenericEvent, error) {
+func EmitArticlePublishedEvent(article ArticlePublished) (events.GenericEvent, error) {
 	// Serialize the body to a JSON string.
 	data, err := json.Marshal(article)
 	if err != nil {
@@ -81,6 +96,44 @@ func EmitCongressionalTradeEvent(trade CongressionalTrade) (events.GenericEvent,
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "congressional_trade",
+		Source:    "feeds",
+		Body:      data,
+	}
+
+	return Client().Publish(e)
+}
+
+func EmitEarningsEvent(body Earnings) (events.GenericEvent, error) {
+	// Serialize the body to a JSON string.
+	data, err := json.Marshal(body)
+	if err != nil {
+		return events.GenericEvent{}, err
+	}
+
+	// Define the event for publishing articles.
+	e := events.GenericEvent{
+		Id:        uuid.New().String(),
+		Timestamp: time.Now(),
+		Name:      "earnings",
+		Source:    "feeds",
+		Body:      data,
+	}
+
+	return Client().Publish(e)
+}
+
+func EmitDividendEvent(body Dividend) (events.GenericEvent, error) {
+	// Serialize the body to a JSON string.
+	data, err := json.Marshal(body)
+	if err != nil {
+		return events.GenericEvent{}, err
+	}
+
+	// Define the event for publishing articles.
+	e := events.GenericEvent{
+		Id:        uuid.New().String(),
+		Timestamp: time.Now(),
+		Name:      "dividend",
 		Source:    "feeds",
 		Body:      data,
 	}

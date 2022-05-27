@@ -33,7 +33,7 @@ func main() {
 		}
 
 		// Create the event
-		article := event.Article{
+		article := event.ArticlePublished{
 			Source: url,
 			Byline: author,
 			Title:  strings.TrimLeft(item.Title, ": "),

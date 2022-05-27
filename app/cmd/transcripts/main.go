@@ -193,7 +193,7 @@ func main() {
 		}
 
 		// Create the event
-		article := event.Article{
+		article := event.ArticlePublished{
 			Source: "https://seekingalpha.com/api/v3/articles",
 			Byline: "Seeking Alpha",
 			Title:  transcript.Title,
