@@ -18,6 +18,7 @@ type Article struct {
 	Title  string    `json:"title"`
 	Url    string    `json:"url"`
 	Date   time.Time `json:"date"`
+	Tags   []string  `json:"tags"`
 }
 
 func Client() *client.Client {
