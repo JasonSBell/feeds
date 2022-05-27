@@ -203,7 +203,7 @@ func main() {
 		}
 
 		// Send it!!
-		if _, err := event.PublishArticle(article); err != nil {
+		if _, err := event.EmitArticlePublishedEvent(article); err != nil {
 			log.Fatal(err)
 		} else {
 			log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())

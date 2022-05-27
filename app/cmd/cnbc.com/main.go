@@ -38,11 +38,11 @@ func main() {
 			Title:  item.Title,
 			Url:    item.Link,
 			Date:   timestamp,
-			Tags : []string{}
+			Tags:   []string{},
 		}
 
 		// Send it!!
-		if _, err := event.PublishArticle(article); err != nil {
+		if _, err := event.EmitArticlePublishedEvent(article); err != nil {
 			log.Fatal(err)
 		} else {
 			log.Printf("Article '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())

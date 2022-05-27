@@ -1,3 +1,5 @@
+package main
+
 // Download Individual Disclosures
 // For downloading individual pieces of information, there are two primary folders where information is store. These two folders are data/ and aggregate/.
 
@@ -38,34 +40,80 @@
 //       console.log(response)
 //     })
 
-const superagent = require("superagent");
-const moment = require("moment");
+import (
+	"encoding/json"
+	"io"
+	"net/http"
+	"strings"
+	"time"
+)
 
-function toDate(value) {
-  const d = moment(value, "MM/DD/YYYY", true);
-  return d.isValid() ? d.toDate() : null;
+type SenateTrade struct {
+	TransactionDate *time.Time
+	DisclosureDate  *time.Time
+	Url             string
+	Name            string
+	Owner           string
+	Ticker          string
+	AssetType       string
+	Type            TransactionType
+	Comment         string
+	Amount          string
 }
 
-function fetchSenateTrades(date = new Date()) {
-  return superagent
-    .get(
-      "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json"
-    )
-    .then((res) => res.body)
-    .then((trades) => {
-      return trades.map((e) => ({
-        transactionDate: toDate(e.transaction_date),
-        disclosureDate: toDate(e.disclosure_date),
-        url: e.ptr_link,
-        name: e.senator,
-        owner: e.owner,
-        ticker: e.ticker,
-        assetType: e.asset_type,
-        type: e.type,
-        comment: e.comment,
-        amount: e.amount,
-      }));
-    });
-}
+func AllSenateTrades() ([]SenateTrade, error) {
 
-module.exports = fetchSenateTrades;
+	uri := "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json"
+
+	// Craft the request for the page.
+	req, _ := http.NewRequest("GET", uri, nil)
+
+	// Make the request.
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return []SenateTrade{}, err
+	}
+	defer resp.Body.Close()
+
+	content, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []SenateTrade{}, err
+	}
+
+	// Define the structure of the response from the API endpoint.
+	var body []struct {
+		Senator         string `json:"senator"`
+		TransactionDate string `json:"transaction_date"`
+		DisclosureDate  string `json:"disclosure_date"`
+		PtrLink         string `json:"ptr_link"`
+		Ticker          string `json:"ticker"`
+		Owner           string `json:"owner"`
+		Amount          string `json:"amount"`
+		Type            string `json:"type"`
+		AssetType       string `json:"asset_type"`
+		Comment         string `json:"comment"`
+	}
+
+	if err := json.Unmarshal(content, &body); err != nil {
+		return []SenateTrade{}, err
+	}
+
+	trades := []SenateTrade{}
+	for _, trade := range body {
+		trades = append(trades, SenateTrade{
+			Name:            strings.TrimSpace(trade.Senator),
+			TransactionDate: ParseDate(trade.TransactionDate),
+			DisclosureDate:  ParseDate(trade.DisclosureDate),
+			Url:             trade.PtrLink,
+			Ticker:          strings.ToUpper(strings.TrimSpace(trade.Ticker)),
+			Owner:           strings.Trim(trade.Owner, "- "),
+			Amount:          trade.Amount,
+			AssetType:       trade.AssetType,
+			Comment:         trade.Comment,
+			Type:            StringToTransactionType(trade.Type),
+		})
+	}
+
+	return trades, err
+}
