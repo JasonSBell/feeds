@@ -117,3 +117,38 @@ func AllSenateTrades() ([]SenateTrade, error) {
 
 	return trades, err
 }
+
+func AllSenateTradesOnDate(date time.Time) ([]SenateTrade, error) {
+	startOfDay := date.UTC().Truncate(24 * time.Hour).Add(-time.Microsecond)
+	endOfDay := startOfDay.Add(24*time.Hour + 2*time.Microsecond)
+
+	allTrades, err := AllSenateTrades()
+	if err != nil {
+		return allTrades, err
+	}
+
+	trades := []SenateTrade{}
+	for _, trade := range allTrades {
+		if trade.TransactionDate != nil && trade.TransactionDate.After(startOfDay) && trade.TransactionDate.Before(endOfDay) {
+			trades = append(trades, trade)
+		}
+	}
+
+	return trades, err
+}
+
+func AllSenateTradesSince(date time.Time) ([]SenateTrade, error) {
+	allTrades, err := AllSenateTrades()
+	if err != nil {
+		return allTrades, err
+	}
+
+	trades := []SenateTrade{}
+	for _, trade := range allTrades {
+		if trade.TransactionDate != nil && trade.TransactionDate.After(date) {
+			trades = append(trades, trade)
+		}
+	}
+
+	return trades, err
+}

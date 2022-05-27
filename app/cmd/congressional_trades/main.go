@@ -3,13 +3,18 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/allokate-ai/feeds/app/internal/event"
 )
 
 func main() {
 
-	senateTrades, err := AllSenateTrades()
+	// Congressional reporting requirements say that they have to disclose within 30 (sometimes 45) days so
+	// lets get everything in the last 45 days.
+	date := time.Now().UTC().Truncate(24 * time.Hour).Add(-45 * 24 * time.Hour)
+
+	senateTrades, err := AllSenateTradesSince(date)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +56,7 @@ func main() {
 
 	fmt.Println("Fetched", len(senateTrades), "senate transactions")
 
-	houseTrades, err := AllHouseTrades()
+	houseTrades, err := AllHouseTradesSince(date)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -114,3 +114,38 @@ func AllHouseTrades() ([]HouseTrade, error) {
 
 	return trades, err
 }
+
+func AllHouseTradesOnDate(date time.Time) ([]HouseTrade, error) {
+	startOfDay := date.UTC().Truncate(24 * time.Hour).Add(-time.Microsecond)
+	endOfDay := startOfDay.Add(24*time.Hour + 2*time.Microsecond)
+
+	allTrades, err := AllHouseTrades()
+	if err != nil {
+		return allTrades, err
+	}
+
+	trades := []HouseTrade{}
+	for _, trade := range allTrades {
+		if trade.TransactionDate != nil && trade.TransactionDate.After(startOfDay) && trade.TransactionDate.Before(endOfDay) {
+			trades = append(trades, trade)
+		}
+	}
+
+	return trades, err
+}
+
+func AllHouseTradesSince(date time.Time) ([]HouseTrade, error) {
+	allTrades, err := AllHouseTrades()
+	if err != nil {
+		return allTrades, err
+	}
+
+	trades := []HouseTrade{}
+	for _, trade := range allTrades {
+		if trade.TransactionDate != nil && trade.TransactionDate.After(date) {
+			trades = append(trades, trade)
+		}
+	}
+
+	return trades, err
+}
