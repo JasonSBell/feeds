@@ -42,6 +42,7 @@ func main() {
 				Title:  item.Title,
 				Url:    item.Link,
 				Date:   timestamp,
+				Tags:   []string{},
 			}
 
 			// Send it!!
