@@ -32,12 +32,13 @@ func main() {
 
 		// Create the event
 		article := event.ArticlePublished{
-			Source: url,
-			Byline: author,
-			Title:  item.Title,
-			Url:    item.Link,
-			Date:   timestamp,
-			Tags:   []string{},
+			Source:   url,
+			SiteName: "Seeking Alpha",
+			Byline:   author,
+			Title:    item.Title,
+			Url:      item.Link,
+			Date:     timestamp,
+			Tags:     []string{},
 		}
 
 		// Send it!!

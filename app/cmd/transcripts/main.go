@@ -194,12 +194,13 @@ func main() {
 
 		// Create the event
 		article := event.ArticlePublished{
-			Source: "https://seekingalpha.com/api/v3/articles",
-			Byline: "Seeking Alpha",
-			Title:  transcript.Title,
-			Url:    transcript.Url,
-			Date:   transcript.Date,
-			Tags:   tags,
+			Source:   "https://seekingalpha.com/api/v3/articles",
+			SiteName: "Seeking Alpha",
+			Byline:   "Seeking Alpha",
+			Title:    transcript.Title,
+			Url:      transcript.Url,
+			Date:     transcript.Date,
+			Tags:     tags,
 		}
 
 		// Send it!!

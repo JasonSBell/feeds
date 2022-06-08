@@ -38,12 +38,13 @@ func main() {
 
 			// Create the event
 			article := event.ArticlePublished{
-				Source: url,
-				Byline: author,
-				Title:  strings.TrimLeft(item.Title, ": "),
-				Url:    item.Link,
-				Date:   timestamp,
-				Tags:   []string{},
+				Source:   url,
+				SiteName: "Market Watch",
+				Byline:   author,
+				Title:    strings.TrimLeft(item.Title, ": "),
+				Url:      item.Link,
+				Date:     timestamp,
+				Tags:     []string{},
 			}
 
 			// Send it!!

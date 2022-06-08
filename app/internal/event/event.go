@@ -13,12 +13,13 @@ var c *client.Client
 
 // Define the JSON body structure for publishing an article (article.created).
 type ArticlePublished struct {
-	Source string    `json:"source"`
-	Byline string    `json:"byline"`
-	Title  string    `json:"title"`
-	Url    string    `json:"url"`
-	Date   time.Time `json:"date"`
-	Tags   []string  `json:"tags"`
+	Source   string    `json:"source"`
+	SiteName string    `json:"siteName"`
+	Byline   string    `json:"byline"`
+	Title    string    `json:"title"`
+	Url      string    `json:"url"`
+	Date     time.Time `json:"date"`
+	Tags     []string  `json:"tags"`
 }
 
 // Define the JSON body structure for publishing an article (congressional_trade).
