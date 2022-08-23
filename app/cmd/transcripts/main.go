@@ -184,7 +184,12 @@ func main() {
 	for _, transcript := range transcripts {
 
 		// Define the basic set of tags for the earnings call transcript.
-		tags := []string{"earnings call"}
+		tags := []string{"transcript"}
+
+		// Not all transcripts are earnings call. Some are other presentations and events.
+		if strings.Contains(strings.ToLower(transcript.Title), "earnings call") {
+			tags = append(tags, "earnings call")
+		}
 
 		// Scan the title looking for the ticker of the company and append to tags if found.
 		tickers := ExtractTickers(transcript.Title)
@@ -203,12 +208,13 @@ func main() {
 			Tags:     tags,
 		}
 
+		fmt.Println(article)
 		// Send it!!
-		if _, err := event.EmitArticlePublishedEvent(article); err != nil {
-			log.Fatal(err)
-		} else {
-			log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())
-		}
+		// if _, err := event.EmitArticlePublishedEvent(article); err != nil {
+		// 	log.Fatal(err)
+		// } else {
+		// 	log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())
+		// }
 
 	}
 
