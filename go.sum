@@ -1,8 +1,8 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/PuerkitoBio/goquery v1.5.1 h1:PSPBGne8NIUWw+/7vFBV+kG2J/5MOjbzc7154OaKCSE=
 github.com/PuerkitoBio/goquery v1.5.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
-github.com/allokate-ai/events v0.0.0-20220526005034-79a4ff4cf25c h1:xft+bLlIXVQrwyFHVFsf6xKjZwA4kHO9XrOVO19Iwbg=
-github.com/allokate-ai/events v0.0.0-20220526005034-79a4ff4cf25c/go.mod h1:18BNivYRy8SdrZBE1tIa7S0jMCgitAXR4j4FAnQIDVE=
+github.com/allokate-ai/environment v0.0.0-20220811173816-5755ba0f94be h1:qw639wGMZ1oBkeze5RHbTu6mubNRORvFVKHY7RXLk18=
+github.com/allokate-ai/environment v0.0.0-20220811173816-5755ba0f94be/go.mod h1:Td3yQwZPixqUIUkHsWmSaSCFXXD2Xvrzjm6vFh1hJLM=
 github.com/allokate-ai/events v0.0.0-20220526021933-29f37de9e553 h1:gsmWhO+EifISK2msNmIaFgLdhZ5WdGLVw94vCuKtC9A=
 github.com/allokate-ai/events v0.0.0-20220526021933-29f37de9e553/go.mod h1:18BNivYRy8SdrZBE1tIa7S0jMCgitAXR4j4FAnQIDVE=
 github.com/andybalholm/cascadia v1.1.0 h1:BuuO6sSfQNFRu1LppgbD25Hr2vLYW25JvxHs5zzsLTo=
@@ -38,8 +38,9 @@ github.com/urfave/cli v1.22.3/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtX
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20200202094626-16171245cfb2/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
-golang.org/x/net v0.0.0-20200301022130-244492dfa37a h1:GuSPYbZzB5/dcLNCwLQLsg3obCJtX9IJhpXkvY7kzk0=
 golang.org/x/net v0.0.0-20200301022130-244492dfa37a/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
+golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 h1:CIJ76btIcR3eFI5EgSo6k1qKw9KJexJuRLI9G7Hp5wE=
+golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=

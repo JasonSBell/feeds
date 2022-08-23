@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/allokate-ai/environment"
 	"github.com/allokate-ai/events/pkg/client"
 	"github.com/allokate-ai/events/pkg/events"
 	"github.com/google/uuid"
@@ -55,7 +56,7 @@ type Dividend struct {
 func Client() *client.Client {
 	if c == nil {
 		// Declare a client that will be used to publish new articles.
-		cli, err := client.NewClient("http://192.168.4.64:8092", nil)
+		cli, err := client.NewClient(environment.GetValueOrDefault("EVENT_SERVICE_API", "http://localhost:8092"), nil)
 		if err != nil {
 			panic(err)
 		}
