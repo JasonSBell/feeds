@@ -1,4 +1,4 @@
-package main
+package dividends
 
 import (
 	"encoding/json"
@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/spf13/cobra"
 )
 
 func ParseDate(text string) *time.Time {
@@ -98,34 +99,50 @@ func DividendsOnDate(date time.Time) ([]Dividend, error) {
 	return dividends, err
 }
 
-func main() {
+var Cmd = &cobra.Command{
+	Use:   "dividends",
+	Short: "Scrape company dividend data",
+	Run: func(cmd *cobra.Command, args []string) {
 
-	today := time.Now().UTC().Truncate(24 * time.Hour)
+		today := time.Now().UTC().Truncate(24 * time.Hour)
 
-	earnings, err := DividendsOnDate(today)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, item := range earnings {
-		// Create the event
-		dividend := event.Dividend{
-			Name:             item.Name,
-			Ticker:           item.Ticker,
-			ExDate:           item.ExDate,
-			DividendRate:     item.DividendRate,
-			RecordDate:       item.RecordDate,
-			PaymentDate:      item.PaymentDate,
-			AnnouncementDate: item.AnnouncementDate,
-		}
-
-		// Send it!!
-		if _, err := event.EmitDividendEvent(dividend); err != nil {
+		earnings, err := DividendsOnDate(today)
+		if err != nil {
 			log.Fatal(err)
-		} else {
-			log.Printf("%s paid dividends on %s", dividend.Ticker, dividend.ExDate)
 		}
-	}
 
-	fmt.Println(len(earnings), "paid dividends on", today.Format("2006-01-02"))
+		for _, item := range earnings {
+			// Create the event
+			dividend := event.Dividend{
+				Name:             item.Name,
+				Ticker:           item.Ticker,
+				ExDate:           item.ExDate,
+				DividendRate:     item.DividendRate,
+				RecordDate:       item.RecordDate,
+				PaymentDate:      item.PaymentDate,
+				AnnouncementDate: item.AnnouncementDate,
+			}
+
+			// Send it!!
+			if _, err := event.EmitDividendEvent(dividend); err != nil {
+				log.Fatal(err)
+			} else {
+				log.Printf("%s paid dividends on %s", dividend.Ticker, dividend.ExDate)
+			}
+		}
+
+		fmt.Println(len(earnings), "paid dividends on", today.Format("2006-01-02"))
+	},
+}
+
+func init() {
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
+
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.feeds.yaml)")
+
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	// Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

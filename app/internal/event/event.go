@@ -56,7 +56,7 @@ type Dividend struct {
 func Client() *client.Client {
 	if c == nil {
 		// Declare a client that will be used to publish new articles.
-		cli, err := client.NewClient(environment.GetValueOrDefault("EVENT_SERVICE_API", "http://localhost:8092"), nil)
+		cli, err := client.NewClient(environment.GetValueOrDefault("EVENT_SERVICE_API", "http://localhost:8094"), nil)
 		if err != nil {
 			panic(err)
 		}

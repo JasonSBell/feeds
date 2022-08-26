@@ -1,4 +1,4 @@
-package main
+package transcripts
 
 import (
 	"encoding/json"
@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/spf13/cobra"
 )
 
 func ExtractTickers(text string) []string {
@@ -172,51 +173,70 @@ func EarningsCallTranscriptsFromDate(date time.Time) ([]EarningsCallTranscript, 
 	return transcripts, nil
 }
 
-func main() {
+// rootCmd represents the base command when called without any subcommands
+var Cmd = &cobra.Command{
+	Use: "transcripts",
+	// Short: "A tool various data feeds",
+	// Long:  `This is a tool used to scrape various RSS news feeds, API, and other sources for data used by Allokate.`,
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	Run: func(cmd *cobra.Command, args []string) {
 
-	yesterday := time.Now().Add(-17 * 24 * time.Hour) // time.Now().Add(-24 * time.Hour)
+		yesterday := time.Now().Add(-17 * 24 * time.Hour) // time.Now().Add(-24 * time.Hour)
 
-	transcripts, err := EarningsCallTranscriptsFromDate(yesterday)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, transcript := range transcripts {
-
-		// Define the basic set of tags for the earnings call transcript.
-		tags := []string{"transcript"}
-
-		// Not all transcripts are earnings call. Some are other presentations and events.
-		if strings.Contains(strings.ToLower(transcript.Title), "earnings call") {
-			tags = append(tags, "earnings call")
+		transcripts, err := EarningsCallTranscriptsFromDate(yesterday)
+		if err != nil {
+			log.Fatal(err)
 		}
 
-		// Scan the title looking for the ticker of the company and append to tags if found.
-		tickers := ExtractTickers(transcript.Title)
-		if len(tickers) > 0 {
-			tags = append(tags, tickers...)
+		for _, transcript := range transcripts {
+
+			// Define the basic set of tags for the earnings call transcript.
+			tags := []string{"transcript"}
+
+			// Not all transcripts are earnings call. Some are other presentations and events.
+			if strings.Contains(strings.ToLower(transcript.Title), "earnings call") {
+				tags = append(tags, "earnings call")
+			}
+
+			// Scan the title looking for the ticker of the company and append to tags if found.
+			tickers := ExtractTickers(transcript.Title)
+			if len(tickers) > 0 {
+				tags = append(tags, tickers...)
+			}
+
+			// Create the event
+			article := event.ArticlePublished{
+				Source:   "https://seekingalpha.com/api/v3/articles",
+				SiteName: "Seeking Alpha",
+				Byline:   "Seeking Alpha",
+				Title:    transcript.Title,
+				Url:      transcript.Url,
+				Date:     transcript.Date,
+				Tags:     tags,
+			}
+
+			// Send it!!
+			if _, err := event.EmitArticlePublishedEvent(article); err != nil {
+				log.Fatal(err)
+			} else {
+				log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())
+			}
+
 		}
 
-		// Create the event
-		article := event.ArticlePublished{
-			Source:   "https://seekingalpha.com/api/v3/articles",
-			SiteName: "Seeking Alpha",
-			Byline:   "Seeking Alpha",
-			Title:    transcript.Title,
-			Url:      transcript.Url,
-			Date:     transcript.Date,
-			Tags:     tags,
-		}
+		fmt.Println("Fetched", len(transcripts), "transcripts for", yesterday.Format("2006-01-02"))
+	},
+}
 
-		fmt.Println(article)
-		// Send it!!
-		// if _, err := event.EmitArticlePublishedEvent(article); err != nil {
-		// 	log.Fatal(err)
-		// } else {
-		// 	log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())
-		// }
+func init() {
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
 
-	}
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.feeds.yaml)")
 
-	fmt.Println("Fetched", len(transcripts), "transcripts for", yesterday.Format("2006-01-02"))
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	// Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

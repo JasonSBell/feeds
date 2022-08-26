@@ -1,4 +1,4 @@
-package main
+package trades
 
 // Download Individual Disclosures
 // For downloading individual pieces of information, there are two primary folders where information is store. These two folders are data/ and aggregate/.

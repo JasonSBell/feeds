@@ -1,4 +1,4 @@
-package main
+package earnings
 
 import (
 	"encoding/json"
@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/spf13/cobra"
 )
 
 type Earnings struct {
@@ -72,29 +73,45 @@ func EarningsOnDate(date time.Time) ([]Earnings, error) {
 	return earnings, err
 }
 
-func main() {
+var Cmd = &cobra.Command{
+	Use:   "earnings",
+	Short: "Scrape company earnings reporting data",
+	Run: func(cmd *cobra.Command, args []string) {
 
-	today := time.Now().UTC().Truncate(24 * time.Hour)
+		today := time.Now().UTC().Truncate(24 * time.Hour)
 
-	earnings, err := EarningsOnDate(today)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, item := range earnings {
-		// Create the event
-		earnings := event.Earnings{
-			Date:   item.Date,
-			Ticker: item.Ticker,
-		}
-
-		// Send it!!
-		if _, err := event.EmitEarningsEvent(earnings); err != nil {
+		earnings, err := EarningsOnDate(today)
+		if err != nil {
 			log.Fatal(err)
-		} else {
-			log.Printf("%s reporting earnings on %s", earnings.Ticker, earnings.Date)
 		}
-	}
 
-	fmt.Println(len(earnings), "reporting earnings for", today.Format("2006-01-02"))
+		for _, item := range earnings {
+			// Create the event
+			earnings := event.Earnings{
+				Date:   item.Date,
+				Ticker: item.Ticker,
+			}
+
+			// Send it!!
+			if _, err := event.EmitEarningsEvent(earnings); err != nil {
+				log.Fatal(err)
+			} else {
+				log.Printf("%s reporting earnings on %s", earnings.Ticker, earnings.Date)
+			}
+		}
+
+		fmt.Println(len(earnings), "reporting earnings for", today.Format("2006-01-02"))
+	},
+}
+
+func init() {
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
+
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.feeds.yaml)")
+
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	// Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

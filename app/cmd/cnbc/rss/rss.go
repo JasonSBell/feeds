@@ -1,24 +1,22 @@
-package main
+package rss
 
 import (
 	"log"
-	"strings"
 	"time"
 
-	"github.com/mmcdole/gofeed"
-
 	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/mmcdole/gofeed"
+	"github.com/spf13/cobra"
 )
 
-func main() {
+var Cmd = &cobra.Command{
+	Use:   "rss",
+	Short: "Scrape news article from cnbc.com's RSS feeds",
+	Run: func(cmd *cobra.Command, args []string) {
 
-	// Define the source url(s) for the feed.
-	urls := []string{
-		"http://www.marketwatch.com/rss/StockstoWatch",
-		"http://www.marketwatch.com/rss/marketpulse",
-	}
+		// Define the source url for the feed.
+		url := "https://www.cnbc.com/id/20409666/device/rss/rss.html?x=1"
 
-	for _, url := range urls {
 		// Parse the feed.
 		fp := gofeed.NewParser()
 		feed, _ := fp.ParseURL(url)
@@ -39,9 +37,9 @@ func main() {
 			// Create the event
 			article := event.ArticlePublished{
 				Source:   url,
-				SiteName: "Market Watch",
+				SiteName: "CNBC",
 				Byline:   author,
-				Title:    strings.TrimLeft(item.Title, ": "),
+				Title:    item.Title,
 				Url:      item.Link,
 				Date:     timestamp,
 				Tags:     []string{},
@@ -54,5 +52,17 @@ func main() {
 				log.Printf("Article '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())
 			}
 		}
-	}
+	},
+}
+
+func init() {
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
+
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.feeds.yaml)")
+
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	// Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
