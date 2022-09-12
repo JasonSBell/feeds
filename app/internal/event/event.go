@@ -8,6 +8,7 @@ import (
 	"github.com/allokate-ai/events/pkg/client"
 	"github.com/allokate-ai/events/pkg/events"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
 
 var c *client.Client
@@ -54,6 +55,8 @@ type Dividend struct {
 }
 
 func Client() *client.Client {
+	godotenv.Load()
+
 	if c == nil {
 		// Declare a client that will be used to publish new articles.
 		cli, err := client.NewClient(environment.GetValueOrDefault("EVENT_SERVICE_API", "http://localhost:8094"), nil)
