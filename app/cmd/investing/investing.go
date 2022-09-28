@@ -1,7 +1,7 @@
 package investing
 
 import (
-	"github.com/allokate-ai/feeds/app/cmd/seekingalpha/rss"
+	"github.com/allokate-ai/feeds/app/cmd/investing/rss"
 
 	"github.com/spf13/cobra"
 )

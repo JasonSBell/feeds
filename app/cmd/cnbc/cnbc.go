@@ -1,7 +1,7 @@
 package cnbc
 
 import (
-	"github.com/allokate-ai/feeds/app/cmd/seekingalpha/rss"
+	"github.com/allokate-ai/feeds/app/cmd/cnbc/rss"
 
 	"github.com/spf13/cobra"
 )

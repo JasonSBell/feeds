@@ -1,7 +1,7 @@
 package marketwatch
 
 import (
-	"github.com/allokate-ai/feeds/app/cmd/seekingalpha/rss"
+	"github.com/allokate-ai/feeds/app/cmd/marketwatch/rss"
 
 	"github.com/spf13/cobra"
 )
