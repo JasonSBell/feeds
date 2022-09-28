@@ -5,6 +5,7 @@ import (
 
 	"github.com/allokate-ai/feeds/app/cmd/cnbc"
 	"github.com/allokate-ai/feeds/app/cmd/congress"
+	"github.com/allokate-ai/feeds/app/cmd/geekwire"
 	"github.com/allokate-ai/feeds/app/cmd/investing"
 	"github.com/allokate-ai/feeds/app/cmd/marketwatch"
 	"github.com/allokate-ai/feeds/app/cmd/nasdaq"
@@ -30,6 +31,7 @@ func main() {
 	Cmd.AddCommand(nasdaq.Cmd)
 	Cmd.AddCommand(seekingalpha.Cmd)
 	Cmd.AddCommand(wsj.Cmd)
+	Cmd.AddCommand(geekwire.Cmd)
 
 	// Execute adds all child commands to the root command and sets flags appropriately.
 	// This is called by main.main(). It only needs to happen once to the rootCmd.
