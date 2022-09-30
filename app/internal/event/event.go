@@ -54,6 +54,15 @@ type Dividend struct {
 	AnnouncementDate *time.Time `json:"announcementDate"`
 }
 
+type Tweet struct {
+	Name     string    `json:"name"`
+	UserName string    `json:"username"`
+	Date     time.Time `json:"date"`
+	Content  string    `json:"content"`
+	Mentions []string  `json:"mention"`
+	Hashtags []string  `json:"hashtags"`
+}
+
 func Client() *client.Client {
 	godotenv.Load()
 
@@ -139,6 +148,25 @@ func EmitDividendEvent(body Dividend) (events.GenericEvent, error) {
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "dividend",
+		Source:    "feeds",
+		Body:      data,
+	}
+
+	return Client().Publish(e)
+}
+
+func EmitTweetEvent(body Tweet) (events.GenericEvent, error) {
+	// Serialize the body to a JSON string.
+	data, err := json.Marshal(body)
+	if err != nil {
+		return events.GenericEvent{}, err
+	}
+
+	// Define the event for publishing articles.
+	e := events.GenericEvent{
+		Id:        uuid.New().String(),
+		Timestamp: time.Now(),
+		Name:      "tweet",
 		Source:    "feeds",
 		Body:      data,
 	}
