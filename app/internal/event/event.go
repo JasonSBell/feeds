@@ -59,7 +59,7 @@ type Tweet struct {
 	UserName string    `json:"username"`
 	Date     time.Time `json:"date"`
 	Content  string    `json:"content"`
-	Mentions []string  `json:"mention"`
+	Mentions []string  `json:"mentions"`
 	Hashtags []string  `json:"hashtags"`
 }
 
