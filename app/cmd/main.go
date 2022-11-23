@@ -10,7 +10,9 @@ import (
 	"github.com/allokate-ai/feeds/app/cmd/marketwatch"
 	"github.com/allokate-ai/feeds/app/cmd/nasdaq"
 	"github.com/allokate-ai/feeds/app/cmd/seekingalpha"
+	"github.com/allokate-ai/feeds/app/cmd/twitter"
 	"github.com/allokate-ai/feeds/app/cmd/wsj"
+        "github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -21,6 +23,8 @@ var Cmd = &cobra.Command{
 }
 
 func main() {
+	godotenv.Load()
+
 	// Add top level flags here.
 	// Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
@@ -32,6 +36,7 @@ func main() {
 	Cmd.AddCommand(seekingalpha.Cmd)
 	Cmd.AddCommand(wsj.Cmd)
 	Cmd.AddCommand(geekwire.Cmd)
+	Cmd.AddCommand(twitter.Cmd)
 
 	// Execute adds all child commands to the root command and sets flags appropriately.
 	// This is called by main.main(). It only needs to happen once to the rootCmd.
