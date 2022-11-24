@@ -63,9 +63,9 @@ func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int) (
 	req.Header.Set("Host", "seekingalpha.com")
 	req.Header.Set(
 		"User-Agent",
-		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15",
+		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15",
 	)
-	req.Header.Set("Accept-Language", "en-us")
+	req.Header.Set("Accept-Language", "en-us,en;q=0.9")
 	req.Header.Set("Connection", "keep-alive")
 
 	// Make the request.
@@ -75,6 +75,10 @@ func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int) (
 		return PagedEarningsCallTranscripts{}, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return PagedEarningsCallTranscripts{}, fmt.Errorf("received bad status code %d", resp.StatusCode)
+	}
 
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -157,9 +161,7 @@ func EarningsCallTranscriptsFromDate(date time.Time) ([]EarningsCallTranscript, 
 			return transcripts, err
 		}
 
-		for _, transcript := range data.Transcripts {
-			transcripts = append(transcripts, transcript)
-		}
+		transcripts = append(transcripts, data.Transcripts...)
 
 		// Break if we fetched the last page.
 		if data.Page >= data.TotalPages {
@@ -182,7 +184,7 @@ var Cmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		yesterday := time.Now().Add(-17 * 24 * time.Hour) // time.Now().Add(-24 * time.Hour)
+		yesterday := time.Now().Add(-24 * time.Hour)
 
 		transcripts, err := EarningsCallTranscriptsFromDate(yesterday)
 		if err != nil {
@@ -217,7 +219,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitArticlePublishedEvent(article); err != nil {
+			if _, err := event.EmitArticlePublishedEvent("feeds.seekingalpha.transcripts", article); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())

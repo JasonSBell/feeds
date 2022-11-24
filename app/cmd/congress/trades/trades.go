@@ -50,7 +50,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitCongressionalTradeEvent(e); err != nil {
+			if _, err := event.EmitCongressionalTradeEvent("feeds.congress.trades", e); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Congressional trade event published for %s member %s trading %s on %s", e.Body, trade.Name, trade.Ticker, trade.TransactionDate.Local())
@@ -90,7 +90,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitCongressionalTradeEvent(e); err != nil {
+			if _, err := event.EmitCongressionalTradeEvent("feeds.congress.trades", e); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Congressional trade event published for %s member %s trading %s on %s", e.Body, trade.Name, trade.Ticker, trade.TransactionDate.Local())

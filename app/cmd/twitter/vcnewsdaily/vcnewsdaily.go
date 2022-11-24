@@ -98,7 +98,7 @@ var Cmd = &cobra.Command{
 			tweet := BuildTweetEvent(item)
 
 			// Send it!!
-			if _, err := event.EmitTweetEvent(tweet); err != nil {
+			if _, err := event.EmitTweetEvent("feeds.twitter.vcnewsdaily", tweet); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("%s: %s", tweet.Date.Format(time.RFC3339), tweet.Content)

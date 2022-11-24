@@ -45,7 +45,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitArticlePublishedEvent(article); err != nil {
+			if _, err := event.EmitArticlePublishedEvent("feeds.seekingalpha.rss", article); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Article '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())

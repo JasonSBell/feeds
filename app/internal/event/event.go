@@ -79,7 +79,7 @@ func Client() *client.Client {
 
 }
 
-func EmitArticlePublishedEvent(article ArticlePublished) (events.GenericEvent, error) {
+func EmitArticlePublishedEvent(source string, article ArticlePublished) (events.GenericEvent, error) {
 	// Serialize the body to a JSON string.
 	data, err := json.Marshal(article)
 	if err != nil {
@@ -91,14 +91,14 @@ func EmitArticlePublishedEvent(article ArticlePublished) (events.GenericEvent, e
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "news",
-		Source:    "feeds",
+		Source:    source,
 		Body:      data,
 	}
 
 	return Client().Publish(e)
 }
 
-func EmitCongressionalTradeEvent(trade CongressionalTrade) (events.GenericEvent, error) {
+func EmitCongressionalTradeEvent(source string, trade CongressionalTrade) (events.GenericEvent, error) {
 	// Serialize the body to a JSON string.
 	data, err := json.Marshal(trade)
 	if err != nil {
@@ -110,14 +110,14 @@ func EmitCongressionalTradeEvent(trade CongressionalTrade) (events.GenericEvent,
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "congressional_trade",
-		Source:    "feeds",
+		Source:    source,
 		Body:      data,
 	}
 
 	return Client().Publish(e)
 }
 
-func EmitEarningsEvent(body Earnings) (events.GenericEvent, error) {
+func EmitEarningsEvent(source string, body Earnings) (events.GenericEvent, error) {
 	// Serialize the body to a JSON string.
 	data, err := json.Marshal(body)
 	if err != nil {
@@ -129,14 +129,14 @@ func EmitEarningsEvent(body Earnings) (events.GenericEvent, error) {
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "earnings",
-		Source:    "feeds",
+		Source:    source,
 		Body:      data,
 	}
 
 	return Client().Publish(e)
 }
 
-func EmitDividendEvent(body Dividend) (events.GenericEvent, error) {
+func EmitDividendEvent(source string, body Dividend) (events.GenericEvent, error) {
 	// Serialize the body to a JSON string.
 	data, err := json.Marshal(body)
 	if err != nil {
@@ -148,14 +148,14 @@ func EmitDividendEvent(body Dividend) (events.GenericEvent, error) {
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "dividend",
-		Source:    "feeds",
+		Source:    source,
 		Body:      data,
 	}
 
 	return Client().Publish(e)
 }
 
-func EmitTweetEvent(body Tweet) (events.GenericEvent, error) {
+func EmitTweetEvent(source string, body Tweet) (events.GenericEvent, error) {
 	// Serialize the body to a JSON string.
 	data, err := json.Marshal(body)
 	if err != nil {
@@ -167,7 +167,7 @@ func EmitTweetEvent(body Tweet) (events.GenericEvent, error) {
 		Id:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Name:      "tweet",
-		Source:    "feeds",
+		Source:    source,
 		Body:      data,
 	}
 

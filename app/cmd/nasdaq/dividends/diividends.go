@@ -124,7 +124,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitDividendEvent(dividend); err != nil {
+			if _, err := event.EmitDividendEvent("feeds.nasdaq.dividends", dividend); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("%s paid dividends on %s", dividend.Ticker, dividend.ExDate)

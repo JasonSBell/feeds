@@ -53,7 +53,7 @@ var Cmd = &cobra.Command{
 				log.Println(item.Title)
 
 				// Send it!!
-				if _, err := event.EmitArticlePublishedEvent(article); err != nil {
+				if _, err := event.EmitArticlePublishedEvent("feeds.wjs.rss", article); err != nil {
 					log.Fatal(err)
 				} else {
 					log.Printf("Article '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())

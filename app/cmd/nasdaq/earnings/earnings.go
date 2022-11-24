@@ -93,7 +93,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitEarningsEvent(earnings); err != nil {
+			if _, err := event.EmitEarningsEvent("feeds.nasdaq.earnings", earnings); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("%s reporting earnings on %s", earnings.Ticker, earnings.Date)
