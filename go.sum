@@ -7,6 +7,8 @@ github.com/allokate-ai/events v0.0.0-20220526021933-29f37de9e553 h1:gsmWhO+EifIS
 github.com/allokate-ai/events v0.0.0-20220526021933-29f37de9e553/go.mod h1:18BNivYRy8SdrZBE1tIa7S0jMCgitAXR4j4FAnQIDVE=
 github.com/allokate-ai/events v0.0.0-20221127001549-d954b75c3ed1 h1:CU1w4lVb2F3iE5J1DxYPaegpoeQgcT5Vwth0CB9eEQo=
 github.com/allokate-ai/events v0.0.0-20221127001549-d954b75c3ed1/go.mod h1:5rZCxbUVPp24Mjr63/4StOyOeFiGWvf4BQ6vI3sESD0=
+github.com/allokate-ai/events v0.0.0-20221127012243-c47debda883b h1:BWFBbbkq3z8BaqktwMtxvHB4ki2rAj5xKMwS8mmR2oA=
+github.com/allokate-ai/events v0.0.0-20221127012243-c47debda883b/go.mod h1:5rZCxbUVPp24Mjr63/4StOyOeFiGWvf4BQ6vI3sESD0=
 github.com/allokate-ai/optional v0.0.0-20220825031640-1ddf42024c43 h1:B01vwGZomPfMuZ7q6HpxFMFWBGkKNDsFZH9aInzaSe4=
 github.com/allokate-ai/optional v0.0.0-20220825031640-1ddf42024c43/go.mod h1:4OwMn1uBRuLQ8WSBagAK9/BbhGC4R0KQasudykTtV1Y=
 github.com/andybalholm/cascadia v1.1.0 h1:BuuO6sSfQNFRu1LppgbD25Hr2vLYW25JvxHs5zzsLTo=

@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/allokate-ai/environment v0.0.0-20220811173816-5755ba0f94be
-	github.com/allokate-ai/events v0.0.0-20221127001549-d954b75c3ed1
+	github.com/allokate-ai/events v0.0.0-20221127012243-c47debda883b
 	github.com/g8rswimmer/go-twitter/v2 v2.1.2
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.4.0
