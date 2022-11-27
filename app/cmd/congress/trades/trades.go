@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/allokate-ai/events/app/pkg/client"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +35,7 @@ var Cmd = &cobra.Command{
 				continue
 			}
 
-			e := event.CongressionalTrade{
+			e := client.CongressionalTrade{
 				Body:            "Senate",
 				TransactionDate: *trade.TransactionDate,
 				DisclosureDate:  trade.DisclosureDate,
@@ -50,7 +50,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitCongressionalTradeEvent("feeds.congress.trades", e); err != nil {
+			if _, err := client.Default().EmitCongressionalTradeEvent("feeds.congress.trades", e); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Congressional trade event published for %s member %s trading %s on %s", e.Body, trade.Name, trade.Ticker, trade.TransactionDate.Local())
@@ -77,7 +77,7 @@ var Cmd = &cobra.Command{
 				continue
 			}
 
-			e := event.CongressionalTrade{
+			e := client.CongressionalTrade{
 				Body:            "House of Representatives",
 				TransactionDate: *trade.TransactionDate,
 				DisclosureDate:  trade.DisclosureDate,
@@ -90,7 +90,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitCongressionalTradeEvent("feeds.congress.trades", e); err != nil {
+			if _, err := client.Default().EmitCongressionalTradeEvent("feeds.congress.trades", e); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Congressional trade event published for %s member %s trading %s on %s", e.Body, trade.Name, trade.Ticker, trade.TransactionDate.Local())

@@ -4,3 +4,5 @@ db.sqlite
 .env
 
 .netrc
+.DS_Store
+feeds

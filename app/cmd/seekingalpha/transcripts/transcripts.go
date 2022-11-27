@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/allokate-ai/events/app/pkg/client"
 	"github.com/spf13/cobra"
 )
 
@@ -208,7 +208,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Create the event
-			article := event.ArticlePublished{
+			article := client.ArticlePublished{
 				Source:   "https://seekingalpha.com/api/v3/articles",
 				SiteName: "Seeking Alpha",
 				Byline:   "Seeking Alpha",
@@ -219,7 +219,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitArticlePublishedEvent("feeds.seekingalpha.transcripts", article); err != nil {
+			if _, err := client.Default().EmitArticlePublishedEvent("feeds.seekingalpha.transcripts", article); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Transcript '%s' published on %s (%s)", article.Title, article.Date.Local(), article.Date.Local())

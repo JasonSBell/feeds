@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/allokate-ai/events/app/pkg/client"
 	"github.com/spf13/cobra"
 )
 
@@ -87,13 +87,13 @@ var Cmd = &cobra.Command{
 
 		for _, item := range earnings {
 			// Create the event
-			earnings := event.Earnings{
+			earnings := client.Earnings{
 				Date:   item.Date,
 				Ticker: item.Ticker,
 			}
 
 			// Send it!!
-			if _, err := event.EmitEarningsEvent("feeds.nasdaq.earnings", earnings); err != nil {
+			if _, err := client.Default().EmitEarningsEvent("feeds.nasdaq.earnings", earnings); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("%s reporting earnings on %s", earnings.Ticker, earnings.Date)

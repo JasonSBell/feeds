@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/allokate-ai/events/app/pkg/client"
 	"github.com/spf13/cobra"
 )
 
@@ -113,7 +113,7 @@ var Cmd = &cobra.Command{
 
 		for _, item := range earnings {
 			// Create the event
-			dividend := event.Dividend{
+			dividend := client.Dividend{
 				Name:             item.Name,
 				Ticker:           item.Ticker,
 				ExDate:           item.ExDate,
@@ -124,7 +124,7 @@ var Cmd = &cobra.Command{
 			}
 
 			// Send it!!
-			if _, err := event.EmitDividendEvent("feeds.nasdaq.dividends", dividend); err != nil {
+			if _, err := client.Default().EmitDividendEvent("feeds.nasdaq.dividends", dividend); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("%s paid dividends on %s", dividend.Ticker, dividend.ExDate)

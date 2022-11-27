@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/allokate-ai/environment v0.0.0-20220811173816-5755ba0f94be
-	github.com/allokate-ai/events v0.0.0-20220526021933-29f37de9e553
+	github.com/allokate-ai/events v0.0.0-20221127001549-d954b75c3ed1
 	github.com/g8rswimmer/go-twitter/v2 v2.1.2
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.4.0
@@ -14,6 +14,7 @@ require (
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
+	github.com/allokate-ai/optional v0.0.0-20220825031640-1ddf42024c43 // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

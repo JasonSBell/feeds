@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/allokate-ai/environment"
-	"github.com/allokate-ai/feeds/app/internal/event"
+	"github.com/allokate-ai/events/app/pkg/client"
 	"github.com/g8rswimmer/go-twitter/v2"
 
 	"github.com/spf13/cobra"
@@ -43,13 +43,13 @@ func ExtractUsernames(text string) []string {
 	return usernames
 }
 
-func BuildTweetEvent(item *twitter.TweetDictionary) event.Tweet {
+func BuildTweetEvent(item *twitter.TweetDictionary) client.Tweet {
 	date, err := time.Parse(time.RFC3339, item.Tweet.CreatedAt)
 	if err != nil {
 		log.Panic("Failed to parse date")
 	}
 
-	return event.Tweet{
+	return client.Tweet{
 		Name:     item.Author.Name,
 		UserName: item.Author.UserName,
 		Date:     date,
@@ -69,7 +69,7 @@ var Cmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		userId := 323853589
 
-		client := &twitter.Client{
+		twitterClient := &twitter.Client{
 			Authorizer: authorize{
 				Token: environment.MustGet("TWITTER_BEARER_TOKEN"),
 			},
@@ -87,7 +87,7 @@ var Cmd = &cobra.Command{
 			MaxResults:  100,
 		}
 
-		timeline, err := client.UserTweetTimeline(context.Background(), strconv.Itoa(userId), opts)
+		timeline, err := twitterClient.UserTweetTimeline(context.Background(), strconv.Itoa(userId), opts)
 		if err != nil {
 			log.Panicf("user tweet timeline error: %v", err)
 		}
@@ -98,7 +98,7 @@ var Cmd = &cobra.Command{
 			tweet := BuildTweetEvent(item)
 
 			// Send it!!
-			if _, err := event.EmitTweetEvent("feeds.twitter.vcnewsdaily", tweet); err != nil {
+			if _, err := client.Default().EmitTweetEvent("feeds.twitter.vcnewsdaily", tweet); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("%s: %s", tweet.Date.Format(time.RFC3339), tweet.Content)
