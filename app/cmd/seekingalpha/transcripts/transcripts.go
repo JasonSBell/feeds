@@ -7,27 +7,11 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"regexp"
-	"strings"
 	"time"
 
 	"github.com/allokate-ai/events/app/pkg/client"
 	"github.com/spf13/cobra"
 )
-
-func ExtractTickers(text string) []string {
-	var tickers []string
-
-	r := regexp.MustCompile(`\( ?(?:(NYSE:)|(NASDAQ:))?([A-Z .]+)\)`)
-	matches := r.FindAllStringSubmatch(text, -1)
-	if len(matches) > 0 {
-		for _, match := range matches {
-			tickers = append(tickers, strings.Trim(match[3], " "))
-		}
-	}
-
-	return tickers
-}
 
 type EarningsCallTranscript struct {
 	Date  time.Time
@@ -193,20 +177,6 @@ var Cmd = &cobra.Command{
 
 		for _, transcript := range transcripts {
 
-			// Define the basic set of tags for the earnings call transcript.
-			tags := []string{"transcript"}
-
-			// Not all transcripts are earnings call. Some are other presentations and events.
-			if strings.Contains(strings.ToLower(transcript.Title), "earnings call") {
-				tags = append(tags, "earnings call")
-			}
-
-			// Scan the title looking for the ticker of the company and append to tags if found.
-			tickers := ExtractTickers(transcript.Title)
-			if len(tickers) > 0 {
-				tags = append(tags, tickers...)
-			}
-
 			// Create the event
 			article := client.ArticlePublished{
 				Source:   "https://seekingalpha.com/api/v3/articles",
@@ -215,7 +185,6 @@ var Cmd = &cobra.Command{
 				Title:    transcript.Title,
 				Url:      transcript.Url,
 				Date:     transcript.Date,
-				Tags:     tags,
 			}
 
 			// Send it!!

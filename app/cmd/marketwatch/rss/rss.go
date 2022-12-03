@@ -47,7 +47,6 @@ var Cmd = &cobra.Command{
 					Title:    strings.TrimLeft(item.Title, ": "),
 					Url:      item.Link,
 					Date:     timestamp,
-					Tags:     []string{},
 				}
 
 				// Send it!!

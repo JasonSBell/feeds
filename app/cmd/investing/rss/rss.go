@@ -42,7 +42,6 @@ var Cmd = &cobra.Command{
 				Title:    item.Title,
 				Url:      item.Link,
 				Date:     timestamp,
-				Tags:     []string{},
 			}
 
 			// Send it!!
