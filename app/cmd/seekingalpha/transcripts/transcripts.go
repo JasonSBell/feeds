@@ -33,17 +33,13 @@ type PagedEarningsCallTranscripts struct {
 	DateRange   DateRange
 }
 
-func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int) (PagedEarningsCallTranscripts, error) {
-	today := time.Now().Format("2006-01-02")
+func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int, cookies []*http.Cookie) (PagedEarningsCallTranscripts, error) {
 
-	uri := fmt.Sprintf("https://seekingalpha.com/api/v3/articles?cacheBuster=%s&filter[category]=earnings::earnings-call-transcripts&filter[since]=%d&filter[until]=%d&include=author,primaryTickers,secondaryTickers&isMounting=true&page[size]=%d&page[number]=%d", today, from.UTC().Unix(), to.UTC().Unix(), size, page)
+	uri := fmt.Sprintf("https://seekingalpha.com/api/v3/articles?filter[category]=earnings::earnings-call-transcripts&filter[since]=%d&filter[until]=%d&include=author,primaryTickers,secondaryTickers&isMounting=true&page[size]=%d&page[number]=%d", from.UTC().Unix(), to.UTC().Unix(), size, page)
 
 	// Craft the request for the page.
 	req, _ := http.NewRequest("GET", uri, nil)
-	req.Header.Set(
-		"Accept",
-		"application/json",
-	)
+	req.Header.Set("Accept", "*/*")
 	req.Header.Set("Host", "seekingalpha.com")
 	req.Header.Set(
 		"User-Agent",
@@ -51,6 +47,10 @@ func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int) (
 	)
 	req.Header.Set("Accept-Language", "en-us,en;q=0.9")
 	req.Header.Set("Connection", "keep-alive")
+
+	for _, cookie := range cookies {
+		req.AddCookie(cookie)
+	}
 
 	// Make the request.
 	client := &http.Client{Timeout: 30 * time.Second}
@@ -129,7 +129,7 @@ func EarningsCallTranscripts(from time.Time, to time.Time, size int, page int) (
 	}, err
 }
 
-func EarningsCallTranscriptsFromDate(date time.Time) ([]EarningsCallTranscript, error) {
+func EarningsCallTranscriptsFromDate(date time.Time, cookies []*http.Cookie) ([]EarningsCallTranscript, error) {
 
 	// Calculate the date range from the start of yesterday (UTC) to midnight today.
 	from := date.UTC().Truncate(24 * time.Hour)
@@ -140,7 +140,7 @@ func EarningsCallTranscriptsFromDate(date time.Time) ([]EarningsCallTranscript, 
 
 	var transcripts []EarningsCallTranscript
 	for {
-		data, err := EarningsCallTranscripts(from, to, 250, page)
+		data, err := EarningsCallTranscripts(from, to, 250, page, cookies)
 		if err != nil {
 			return transcripts, err
 		}
@@ -170,7 +170,12 @@ var Cmd = &cobra.Command{
 
 		yesterday := time.Now().Add(-24 * time.Hour)
 
-		transcripts, err := EarningsCallTranscriptsFromDate(yesterday)
+		cookies, err := GetSeekingAlphaCookies()
+		if err != nil {
+			log.Fatal(fmt.Errorf("failed to get cookies: %w", err))
+		}
+
+		transcripts, err := EarningsCallTranscriptsFromDate(yesterday, cookies)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -198,6 +203,33 @@ var Cmd = &cobra.Command{
 
 		fmt.Println("Fetched", len(transcripts), "transcripts for", yesterday.Format("2006-01-02"))
 	},
+}
+
+func GetSeekingAlphaCookies() ([]*http.Cookie, error) {
+
+	// Craft the request for the page.
+	req, _ := http.NewRequest("GET", "https://seekingalpha.com/earnings/earnings-call-transcripts", nil)
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("Host", "seekingalpha.com")
+	req.Header.Set(
+		"User-Agent",
+		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15",
+	)
+	req.Header.Set("Accept-Language", "en-us,en;q=0.9")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Referer", "https://seekingalpha.com/earnings/earnings-call-transcripts")
+
+	// Make the request.
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return resp.Cookies(), nil
+
 }
 
 func init() {
